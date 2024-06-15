@@ -1,13 +1,17 @@
 package com.example.rereccontracts.ui.theme.pages.admin.contracts
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,15 +19,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.rereccontracts.ui.theme.Green
+import com.example.rereccontracts.ui.theme.Orange
 import com.example.rereccontracts.ui.theme.RerecContractsTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddContracts(modifier: Modifier = Modifier) {
     Surface {
         Column(modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally) {
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center) {
 
             var companyName by remember { mutableStateOf("") }
             var email by remember { mutableStateOf("") }
@@ -32,30 +43,60 @@ fun AddContracts(modifier: Modifier = Modifier) {
             var endDate by remember { mutableStateOf("") }
 
             Spacer(modifier = Modifier.height(20.dp))
-            Text(text = "Add Contract")
+            Text(text = "Add Contract",
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold
+            )
             Spacer(modifier = Modifier.height(20.dp))
             OutlinedTextField(value = companyName,
                 onValueChange = {companyName = it},
-                label = { Text(text = "companyName") })
+                label = { Text(text = "Contractor Name",
+                    fontStyle = FontStyle.Italic,color = Orange) },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Green,
+                    unfocusedBorderColor = Green
+                ))
             Spacer(modifier = Modifier.height(20.dp))
             OutlinedTextField(value = email,
                 onValueChange = {email = it},
-                label = { Text(text = "email") })
+                label = { Text(text = "Email",color = Orange,
+                    fontStyle = FontStyle.Italic) },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Green,
+                    unfocusedBorderColor = Green
+                ))
             Spacer(modifier = Modifier.height(20.dp))
             OutlinedTextField(value = services,
                 onValueChange = {services= it},
-                label = { Text(text = "services") })
+                label = { Text(text = "Services",color = Orange,
+                    fontStyle = FontStyle.Italic) },
+                modifier = Modifier.height(200.dp),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Green,
+                    unfocusedBorderColor = Green
+                ))
             Spacer(modifier = Modifier.height(20.dp))
             OutlinedTextField(value = startDate,
                 onValueChange = {startDate = it},
-                label = { Text(text = "startDate") })
+                label = { Text(text = "Start Date",color = Orange,
+                    fontStyle = FontStyle.Italic) },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Green,
+                    unfocusedBorderColor = Green
+                ))
             Spacer(modifier = Modifier.height(20.dp))
             OutlinedTextField(value = endDate,
                 onValueChange = {endDate = it},
-                label = { Text(text = "endDate") })
+                label = { Text(text = "End Date",color = Orange,
+                    fontStyle = FontStyle.Italic) },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Green,
+                    unfocusedBorderColor = Green
+                ))
             Spacer(modifier = Modifier.height(20.dp))
 
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick = { /*TODO*/ },
+                colors = ButtonDefaults.buttonColors(Orange)) {
                 Text(text = "Add")
             }
         }

@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "964995020440",
+    "firebase_url": "https://rereccontracts-default-rtdb.firebaseio.com",
+    "project_id": "rereccontracts",
+    "storage_bucket": "rereccontracts.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:964995020440:android:dc8e98290366d0d3a202ed",
+        "android_client_info": {
+          "package_name": "com.example.rereccontracts"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA401nVI4-SZquTaiPpy4jZ6VjSSHQOxt0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
