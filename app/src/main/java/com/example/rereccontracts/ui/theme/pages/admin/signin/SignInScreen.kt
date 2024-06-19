@@ -21,18 +21,26 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.rereccontracts.ui.theme.Green
 import com.example.rereccontracts.ui.theme.Orange
 import com.example.rereccontracts.ui.theme.RerecContractsTheme
+import com.example.rereccontracts.ui.theme.pages.admin.data.AuthRepository
+import com.example.rereccontracts.ui.theme.pages.admin.models.BottomBarScreen
+import com.example.rereccontracts.ui.theme.pages.admin.navigation.ROUTE_SIGNUP
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignInAdmin(modifier: Modifier = Modifier) {
+fun SignInAdmin(navController: NavHostController) {
+    var context = LocalContext.current
     Surface {
         Column(modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -54,12 +62,10 @@ fun SignInAdmin(modifier: Modifier = Modifier) {
                     focusedBorderColor = Green,
                     unfocusedBorderColor = Green
                 ))
-            Spacer(modifier = Modifier.height(20.dp))
-
 
             Spacer(modifier = Modifier.height(20.dp))
             OutlinedTextField(value = password,
-                onValueChange = {email = it},
+                onValueChange = {password = it},
                 label = { Text(text = "Password", color = Orange, fontStyle = FontStyle.Italic) },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Green,
@@ -67,14 +73,20 @@ fun SignInAdmin(modifier: Modifier = Modifier) {
                 ))
             Spacer(modifier = Modifier.height(20.dp))
 
-            Button(onClick = { /*TODO*/ },
+            Button(onClick = {
+                var authRepository = AuthRepository(navController,context)
+                authRepository.signIn(email,password)
+                navController.navigate(BottomBarScreen.Contracts.route)
+            },
                 colors = ButtonDefaults.buttonColors(Orange)){
                 Text(text = "Sign in")
             }
             Spacer(modifier = Modifier.height(20.dp))
             Text(text = "No account? Sign In", color = Green,
                 textDecoration = TextDecoration.Underline,
-                modifier = Modifier.clickable {  })//take us to sign up
+                modifier = Modifier.clickable {
+                    navController.navigate(ROUTE_SIGNUP)
+                })//take us to sign up
         }
     }
 
@@ -83,6 +95,6 @@ fun SignInAdmin(modifier: Modifier = Modifier) {
 @Composable
 private fun SignInAdminPreview() {
     RerecContractsTheme {
-        SignInAdmin()
+        SignInAdmin(rememberNavController())
     }
 }

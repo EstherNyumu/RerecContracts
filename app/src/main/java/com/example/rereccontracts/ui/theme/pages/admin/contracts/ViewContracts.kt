@@ -11,10 +11,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.rereccontracts.ui.theme.RerecContractsTheme
 
 @Composable
-fun ViewContractsAdmin(modifier: Modifier = Modifier) {
+fun ViewContractsAdmin(navController: NavHostController) {
     Surface {
         Column(modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally){
@@ -28,6 +30,6 @@ fun ViewContractsAdmin(modifier: Modifier = Modifier) {
 @Composable
 private fun ViewContractsAdminPreview() {
     RerecContractsTheme {
-        ViewContractsAdmin()
+        ViewContractsAdmin(rememberNavController())
     }
 }

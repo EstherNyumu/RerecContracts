@@ -24,13 +24,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.rereccontracts.ui.theme.Green
 import com.example.rereccontracts.ui.theme.Orange
 import com.example.rereccontracts.ui.theme.RerecContractsTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddContracts(modifier: Modifier = Modifier) {
+fun AddContracts(navController: NavHostController) {
     Surface {
         Column(modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -107,6 +109,6 @@ fun AddContracts(modifier: Modifier = Modifier) {
 @Composable
 private fun AddContractsPreview() {
     RerecContractsTheme {
-        AddContracts()
+        AddContracts(rememberNavController())
     }
 }

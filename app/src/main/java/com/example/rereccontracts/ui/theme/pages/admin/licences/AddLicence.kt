@@ -23,13 +23,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.rereccontracts.ui.theme.Green
 import com.example.rereccontracts.ui.theme.Orange
 import com.example.rereccontracts.ui.theme.RerecContractsTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddLicense(modifier: Modifier = Modifier) {
+fun AddLicense(navController: NavHostController) {
     Surface {
         Column(modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -37,7 +39,7 @@ fun AddLicense(modifier: Modifier = Modifier) {
 
             var softwareName by remember { mutableStateOf("") }
             var vendorName by remember { mutableStateOf("") }
-            var licenseDuration by remember { mutableStateOf("") }
+            var licenseType by remember { mutableStateOf("") }
             var cost by remember { mutableStateOf("") }
             var startDate by remember { mutableStateOf("") }
             var endDate by remember { mutableStateOf("") }
@@ -63,9 +65,9 @@ fun AddLicense(modifier: Modifier = Modifier) {
                     unfocusedBorderColor = Green
                 ))
             Spacer(modifier = Modifier.height(20.dp))
-            OutlinedTextField(value = licenseDuration,
-                onValueChange = {licenseDuration= it},
-                label = { Text(text = "licenseDuration",color = Orange) },
+            OutlinedTextField(value = licenseType,
+                onValueChange = {licenseType= it},
+                label = { Text(text = "License Type",color = Orange) },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Green,
                     unfocusedBorderColor = Green
@@ -108,6 +110,6 @@ fun AddLicense(modifier: Modifier = Modifier) {
 @Composable
 private fun AddlicensePreview() {
     RerecContractsTheme {
-        AddLicense()
+        AddLicense(rememberNavController())
     }
 }
