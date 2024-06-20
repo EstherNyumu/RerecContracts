@@ -28,6 +28,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
@@ -63,6 +64,7 @@ fun MainScreen() {
     val navController = rememberNavController()
     val bottomBarHeight = 56.dp
     val bottomBarOffsetHeightPx = remember { mutableStateOf(0f) }
+    var authRepository = AuthRepository(navController, LocalContext.current)
 
     var buttonsVisible = remember { mutableStateOf(true) }
     LaunchedEffect(bottomBarOffsetHeightPx){
@@ -73,7 +75,7 @@ fun MainScreen() {
         modifier = Modifier.bottomBarAnimatedScroll(
             height = bottomBarHeight, offsetHeightPx = bottomBarOffsetHeightPx
         ),
-        bottomBar = { BottomBar(navController = navController, state = buttonsVisible,modifier = Modifier)},
+        bottomBar = { if (authRepository.isLoggedIn()){ BottomBar(navController = navController, state = buttonsVisible,modifier = Modifier)}else{null}},
         topBar = { TopAppBar(modifier = Modifier,navController = navController)}
     ){paddingValues->
         Box(modifier = Modifier.padding(paddingValues)){
@@ -109,6 +111,8 @@ fun Modifier.bottomBarAnimatedScroll(
 fun TopAppBar( modifier:Modifier,navController: NavHostController) {
     val context = LocalContext.current
     val authRepository = AuthRepository(navController, context)
+    var logout by remember { mutableStateOf(false) }
+
 
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -165,6 +169,7 @@ fun TopAppBar( modifier:Modifier,navController: NavHostController) {
 //            ) {
 //                Icon(imageVector = Icons.Default.Person2, contentDescription = "profile")
 //            }
+            logout=authRepository.isLoggedIn()
             IconButton(onClick = {
                 if(authRepository.isLoggedIn()){
                     authRepository.logout()
@@ -173,6 +178,7 @@ fun TopAppBar( modifier:Modifier,navController: NavHostController) {
                     navController.navigate(ROUTE_SIGNIN)
                 }
             },
+                enabled = logout,
                 colors = IconButtonDefaults.iconButtonColors( contentColor = Color.White)) {
                 Icon(imageVector = Icons.Default.Logout, contentDescription = "logout")
             }

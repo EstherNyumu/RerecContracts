@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -28,6 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.rereccontracts.ui.theme.Green
 import com.example.rereccontracts.ui.theme.Orange
 import com.example.rereccontracts.ui.theme.RerecContractsTheme
+import com.example.rereccontracts.ui.theme.pages.admin.data.LicenceRepository
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,6 +39,7 @@ fun AddLicense(navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center) {
 
+            var context = LocalContext.current
             var softwareName by remember { mutableStateOf("") }
             var vendorName by remember { mutableStateOf("") }
             var licenseType by remember { mutableStateOf("") }
@@ -98,7 +101,10 @@ fun AddLicense(navController: NavHostController) {
                 ))
             Spacer(modifier = Modifier.height(20.dp))
 
-            Button(onClick = { /*TODO*/ },
+            Button(onClick = {
+                var licencesRepository = LicenceRepository(navController,context)
+                licencesRepository.saveLicence(softwareName,vendorName,licenseType,cost,startDate,endDate)
+            },
                 colors = ButtonDefaults.buttonColors(Orange)) {
                 Text(text = "Add")
             }

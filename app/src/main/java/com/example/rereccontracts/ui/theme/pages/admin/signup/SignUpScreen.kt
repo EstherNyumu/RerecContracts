@@ -8,9 +8,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -25,7 +30,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,14 +55,18 @@ fun SignUpAdmin(navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center){
             val context = LocalContext.current
-            var email by remember { mutableStateOf(TextFieldValue("")) }
-            var password by remember { mutableStateOf(TextFieldValue("")) }
-            var confirmPassword by remember { mutableStateOf(TextFieldValue("")) }
+            var email by remember { mutableStateOf("") }
+            var password by remember { mutableStateOf("")}
+            var confirmPassword by remember { mutableStateOf("") }
+            var isFormValid by remember { mutableStateOf(false) }
+            var showPassword by remember { mutableStateOf(false) }
 
             Spacer(modifier = Modifier.height(20.dp))
             Text(text = "Sign Up",
                 fontSize = 30.sp)
             Spacer(modifier = Modifier.height(20.dp))
+
+
             OutlinedTextField(value = email,
                 onValueChange = {email = it},
                 label = { Text(text = "Email", color = Orange, fontStyle = FontStyle.Italic) },
@@ -71,6 +82,25 @@ fun SignUpAdmin(navController: NavHostController) {
                 onValueChange = {password = it},
                 label = { Text(text = "Password",color = Orange, fontStyle = FontStyle.Italic) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                visualTransformation = if(showPassword){
+                    VisualTransformation.None
+                }else{
+                    PasswordVisualTransformation()
+                },
+                trailingIcon = {
+                    if (showPassword){
+                        IconButton(onClick = { showPassword = false}) {
+                            Icon(
+                                imageVector = Icons.Filled.Visibility ,
+                                contentDescription = "hide_password")
+                        }
+                    } else{
+                        IconButton(onClick = { showPassword = true }) {
+                            Icon(imageVector = Icons.Filled.VisibilityOff,
+                                contentDescription = "show_password" )
+                        }
+                    }
+                },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Green,
                     unfocusedBorderColor = Green
@@ -82,6 +112,25 @@ fun SignUpAdmin(navController: NavHostController) {
                 onValueChange = {confirmPassword = it},
                 label = { Text(text = "Confirm Password",color = Orange, fontStyle = FontStyle.Italic) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                visualTransformation = if(showPassword){
+                    VisualTransformation.None
+                }else{
+                    PasswordVisualTransformation()
+                },
+                trailingIcon = {
+                    if (showPassword){
+                        IconButton(onClick = { showPassword = false}) {
+                            Icon(
+                                imageVector = Icons.Filled.Visibility ,
+                                contentDescription = "hide_password")
+                        }
+                    } else{
+                        IconButton(onClick = { showPassword = true }) {
+                            Icon(imageVector = Icons.Filled.VisibilityOff,
+                                contentDescription = "show_password" )
+                        }
+                    }
+                },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Green,
                     unfocusedBorderColor = Green
@@ -89,8 +138,9 @@ fun SignUpAdmin(navController: NavHostController) {
             )
             Spacer(modifier = Modifier.height(20.dp))
 
+            isFormValid = email.isNotBlank() && password.isNotBlank() && confirmPassword.isNotBlank()
             Button(onClick = {
-                if (password.text != confirmPassword.text) {
+                if (password != confirmPassword) {
                     Toast.makeText(
                         context,
                         "Passwords do not match",
@@ -99,16 +149,17 @@ fun SignUpAdmin(navController: NavHostController) {
 //                    navController.navigate(ROUTE_SIGNUP)
                 }else{
                     var authRepository = AuthRepository(navController,context)
-                    authRepository.signUp(email.text,password.text)
+                    authRepository.signUp(email,password)
                     navController.navigate(BottomBarScreen.Contracts.route)
                 }
             },
+                enabled = isFormValid,
                 colors = ButtonDefaults.buttonColors(Orange)) {
                 Text(text = "Sign Up")
             }
             Spacer(modifier = Modifier.height(20.dp))
 
-            Text(text = "Have an account?Sign In", color = Green,
+            Text(text = "Already registered?", color = Green,
                 textDecoration = TextDecoration.Underline,
                 modifier = Modifier.clickable {
                     navController.navigate(ROUTE_SIGNIN)
