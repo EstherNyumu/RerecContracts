@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -50,6 +51,7 @@ import com.example.rereccontracts.ui.theme.pages.admin.models.Contracts
 import com.example.rereccontracts.ui.theme.pages.admin.navigation.ROUTE_ADD_CONTRACT
 import com.example.rereccontracts.ui.theme.pages.admin.navigation.ROUTE_SIGNIN
 import org.jetbrains.annotations.Contract
+import java.time.LocalDate
 
 
 @Composable
@@ -60,6 +62,7 @@ fun ViewContractsAdmin(navController:NavHostController) {
     val emptyContractState = remember { mutableStateOf(Contracts()) }
     val emptyContractsListState = remember { mutableStateListOf<Contracts>() }
     val contracts = contractsRepository.viewContracts(emptyContractState, emptyContractsListState)
+    var currentDate = System.currentTimeMillis().toString()
 
 
     Column(
@@ -80,17 +83,20 @@ fun ViewContractsAdmin(navController:NavHostController) {
 
         LazyColumn {
             items(contracts) {
-               ContractItem(
-                   companyName = it.companyName,
-                   services = it.services,
-                   startDate = it.startDate,
-                   endDate = it.endDate,
-                   contractId = it.contractId,
-                   contractsRepository =contractsRepository
-               )
+                ContractItem(
+                    companyName = it.companyName,
+                    services = it.services,
+                    startDate = it.startDate,
+                    endDate = it.endDate,
+                    contractId = it.contractId,
+                    contractsRepository =contractsRepository
+                )
             }
+
         }
     }
+
+
     Column {
         Spacer(modifier = Modifier.weight(1f))
         Row {
@@ -194,12 +200,13 @@ fun ContractItem(
                     Button(onClick = {
                         contractsRepository.terminateContract(contractId)
                         showDialog = false
-                    }) {
+                    },colors = ButtonDefaults.buttonColors(Orange)) {
                         Text("Yes")
                     }
                 },
                 dismissButton = {
-                    Button(onClick = { showDialog = false }) {
+                    Button(onClick = { showDialog = false },
+                        colors = ButtonDefaults.buttonColors(Orange)) {
                         Text("No")
                     }
                 }

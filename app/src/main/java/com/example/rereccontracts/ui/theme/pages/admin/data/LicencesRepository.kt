@@ -64,6 +64,20 @@ class LicenceRepository(var navController: NavHostController,var context: Contex
         })
         return licences
     }
+    /*----Deleting Data Logic---*/
+    fun terminateLicence(id:String){
+        var delRef = FirebaseDatabase.getInstance().getReference().child("Licences/$id")
+        progress.show()
+        delRef.removeValue().addOnCompleteListener {
+            progress.dismiss()
+            if(it.isSuccessful){
+                Toast.makeText(context, "Licence Terminated", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                Toast.makeText(context, "Failed to Terminate Licence", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 }
 
 

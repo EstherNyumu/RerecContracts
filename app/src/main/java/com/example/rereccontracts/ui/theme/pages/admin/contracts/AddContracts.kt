@@ -1,8 +1,7 @@
 package com.example.rereccontracts.ui.theme.pages.admin.contracts
 
-import android.app.DatePickerDialog
-import android.widget.DatePicker
-import androidx.compose.foundation.clickable
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,8 +33,12 @@ import com.example.rereccontracts.ui.theme.Green
 import com.example.rereccontracts.ui.theme.Orange
 import com.example.rereccontracts.ui.theme.RerecContractsTheme
 import com.example.rereccontracts.ui.theme.pages.admin.data.ContractsRepository
-import java.util.Calendar
+import java.time.LocalDate
+import java.time.Period
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddContracts(navController: NavHostController) {
@@ -48,21 +50,11 @@ fun AddContracts(navController: NavHostController) {
             var companyName by remember { mutableStateOf("") }
             var email by remember { mutableStateOf("") }
             var services by remember { mutableStateOf("") }
-            var startDate by rememberSaveable { mutableStateOf("") }
+            var startDate by remember { mutableStateOf("") }
             var endDate by remember { mutableStateOf("") }
             var context = LocalContext.current
-            val calendar = Calendar.getInstance()
+            val formatter =  DateTimeFormatter.ofPattern("dd-MM-yyyy")
 
-            val year = calendar.get(Calendar.YEAR)
-            val month = calendar.get(Calendar.MONTH)
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-            val datePickerDialog = DatePickerDialog(
-                context,
-                { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDay: Int ->
-                    startDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
-                }, year, month, day
-            )
 
             Spacer(modifier = Modifier.height(20.dp))
             Text(text = "Add Contract",
@@ -100,19 +92,16 @@ fun AddContracts(navController: NavHostController) {
             Spacer(modifier = Modifier.height(20.dp))
             OutlinedTextField(value = startDate,
                 onValueChange = {startDate = it},
-                label = { Text(text = "Start Date",color = Orange,
+                label = { Text(text = "Start Date (dd-MM-yyyy)",color = Orange,
                     fontStyle = FontStyle.Italic) },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Green,
                     unfocusedBorderColor = Green
-                ),
-                modifier = Modifier.clickable {
-                    datePickerDialog.show()
-                })
+                ))
             Spacer(modifier = Modifier.height(20.dp))
             OutlinedTextField(value = endDate,
                 onValueChange = {endDate = it},
-                label = { Text(text = "End Date",color = Orange,
+                label = { Text(text = "End Date (dd-MM-yyyy)",color = Orange,
                     fontStyle = FontStyle.Italic) },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Green,
@@ -120,6 +109,21 @@ fun AddContracts(navController: NavHostController) {
                 ))
             Spacer(modifier = Modifier.height(20.dp))
 
+            var result by remember { mutableStateOf("") }
+            Button(onClick = {
+                try {
+                    val start = LocalDate.parse(startDate, formatter)
+                    val end = LocalDate.parse(endDate, formatter)
+//                    result = Period.between(start, end).toString()
+                    val period = ChronoUnit.DAYS.between(start, end)
+                    result = "Days between: $period"
+                } catch (e: Exception) {
+                    result = "Invalid date format"
+                }
+            }) {
+                Text("Calculate")
+            }
+            Text(text = result)
             Button(onClick = {
                 val contractsRepository = ContractsRepository(navController,context )
                 contractsRepository.saveContracts(companyName,email,services,startDate,endDate)
@@ -131,6 +135,7 @@ fun AddContracts(navController: NavHostController) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 private fun AddContractsPreview() {

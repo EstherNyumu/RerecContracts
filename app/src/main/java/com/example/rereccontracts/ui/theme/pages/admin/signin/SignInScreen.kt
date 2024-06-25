@@ -118,6 +118,11 @@ fun SignInAdmin(navController: NavHostController) {
                 Text(text = "Sign in")
             }
             Spacer(modifier = Modifier.height(20.dp))
+            Text(text = "Forgot password?", color = Green,
+                textDecoration = TextDecoration.Underline,
+                modifier = Modifier.clickable {
+                })
+            Spacer(modifier = Modifier.height(20.dp))
             Text(text = "Not registered?", color = Green,
                 textDecoration = TextDecoration.Underline,
                 modifier = Modifier.clickable {
