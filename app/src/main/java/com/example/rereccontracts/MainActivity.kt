@@ -20,31 +20,17 @@ import com.example.rereccontracts.ui.theme.pages.admin.main.MainScreen
         enableEdgeToEdge()
         setContent {
             RerecContractsTheme {
-//                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-//                    Greeting(
-//                        name = "Android",
-//                        modifier = Modifier.padding(innerPadding)
-//                    )
-//                }
                 MainScreen()
             }
         }
     }
 }
 
-//@Composable
-//fun Greeting(name: String, modifier: Modifier = Modifier) {
-//    Text(
-//        text = "Hello $name!",
-//        modifier = modifier
-//    )
-//}
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     RerecContractsTheme {
-//        Greeting("Android")
         MainScreen()
     }
 }

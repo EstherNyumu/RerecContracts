@@ -1,5 +1,8 @@
 package com.example.rereccontracts.ui.theme.pages.admin.licences
 
+import android.os.Build
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -30,7 +33,11 @@ import com.example.rereccontracts.ui.theme.Green
 import com.example.rereccontracts.ui.theme.Orange
 import com.example.rereccontracts.ui.theme.RerecContractsTheme
 import com.example.rereccontracts.ui.theme.pages.admin.data.LicenceRepository
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddLicense(navController: NavHostController) {
@@ -46,6 +53,8 @@ fun AddLicense(navController: NavHostController) {
             var cost by remember { mutableStateOf("") }
             var startDate by remember { mutableStateOf("") }
             var endDate by remember { mutableStateOf("") }
+            var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+            var period by remember { mutableStateOf("") }
 
             Spacer(modifier = Modifier.height(20.dp))
             Text(text = "Add License",
@@ -86,7 +95,7 @@ fun AddLicense(navController: NavHostController) {
             Spacer(modifier = Modifier.height(20.dp))
             OutlinedTextField(value = startDate,
                 onValueChange = {startDate = it},
-                label = { Text(text = "startDate",color = Orange) },
+                label = { Text(text = "Start Date (dd-MM-yyyy)",color = Orange) },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Green,
                     unfocusedBorderColor = Green
@@ -94,7 +103,7 @@ fun AddLicense(navController: NavHostController) {
             Spacer(modifier = Modifier.height(20.dp))
             OutlinedTextField(value = endDate,
                 onValueChange = {endDate = it},
-                label = { Text(text = "endDate",color = Orange) },
+                label = { Text(text = "End Date (dd-MM-yyyy)",color = Orange) },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Green,
                     unfocusedBorderColor = Green
@@ -102,8 +111,17 @@ fun AddLicense(navController: NavHostController) {
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(onClick = {
-                var licencesRepository = LicenceRepository(navController,context)
-                licencesRepository.saveLicence(softwareName,vendorName,licenseType,cost,startDate,endDate)
+                try{
+                    var start = LocalDate.parse(startDate,formatter)
+                    var end = LocalDate.parse(endDate,formatter)
+                    var difference  = ChronoUnit.DAYS.between(start,end)
+                    period = "$difference days"
+                    var licencesRepository = LicenceRepository(navController,context)
+                    licencesRepository.saveLicence(softwareName,vendorName,licenseType,cost,startDate,endDate,period)
+                }
+                catch (e:Exception){
+                    Toast.makeText(context, "Wrong date format or fill in all the details.", Toast.LENGTH_SHORT).show()
+                }
             },
                 colors = ButtonDefaults.buttonColors(Orange)) {
                 Text(text = "Add")
@@ -112,6 +130,7 @@ fun AddLicense(navController: NavHostController) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 private fun AddlicensePreview() {

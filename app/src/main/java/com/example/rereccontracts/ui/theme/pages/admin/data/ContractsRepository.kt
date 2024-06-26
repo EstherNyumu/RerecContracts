@@ -25,9 +25,9 @@ class ContractsRepository(var navController: NavHostController,var context: Cont
         progress.setMessage("Please wait...")
     }
     /*----Saving Data Logic---*/
-    fun saveContracts(companyName:String,email:String,services:String,startDate:String,endDate:String){
+    fun saveContracts(companyName:String,email:String,services:String,startDate:String,endDate:String,period:String){
         var id = System.currentTimeMillis().toString()
-        var contractData= Contracts(companyName,email,services,startDate,endDate,id)
+        var contractData= Contracts(companyName,email,services,startDate,endDate,period,id)
         var contractRef = FirebaseDatabase.getInstance().getReference().child("Contracts/$id")
         progress.show()
 

@@ -83,6 +83,7 @@ fun ViewLicenceAdmin(navController:NavHostController) {
                    cost = it.cost,
                    startDate = it.startDate ,
                    endDate = it.endDate,
+                   period = it.period,
                    licenceId = it.licenceId,
                    licenceRepository = licencesRepository
                )
@@ -92,7 +93,7 @@ fun ViewLicenceAdmin(navController:NavHostController) {
     Column {
         Spacer(modifier = Modifier.weight(1f))
         Row {
-            Spacer(modifier = Modifier.weight(1f))
+//            Spacer(modifier = Modifier.weight(1f))
             FloatingActionButton(
                 onClick = {
                     val authRepository = AuthRepository(navController, context)
@@ -125,6 +126,7 @@ fun LicencesItem(
     cost: String,
     startDate: String,
     endDate: String,
+    period: String,
     licenceId: String,
     licenceRepository: LicenceRepository
 ) {
@@ -161,6 +163,10 @@ fun LicencesItem(
             Row {
                 Text(text = "End Date:",color = Green,modifier = Modifier.padding(5.dp),fontWeight = FontWeight.SemiBold)
                 Text(text = endDate, modifier = Modifier.padding(5.dp))
+            }
+            Row {
+                Text(text = "Days remaining:",color = Green,modifier = Modifier.padding(5.dp),fontWeight = FontWeight.SemiBold)
+                Text(text = period, modifier = Modifier.padding(5.dp))
             }
             Row {
                 Spacer(modifier = Modifier.weight(1f))

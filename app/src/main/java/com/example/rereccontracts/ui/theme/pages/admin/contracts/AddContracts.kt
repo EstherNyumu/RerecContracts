@@ -1,6 +1,7 @@
 package com.example.rereccontracts.ui.theme.pages.admin.contracts
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -52,6 +53,7 @@ fun AddContracts(navController: NavHostController) {
             var services by remember { mutableStateOf("") }
             var startDate by remember { mutableStateOf("") }
             var endDate by remember { mutableStateOf("") }
+            var period by remember { mutableStateOf("") }
             var context = LocalContext.current
             val formatter =  DateTimeFormatter.ofPattern("dd-MM-yyyy")
 
@@ -110,23 +112,31 @@ fun AddContracts(navController: NavHostController) {
             Spacer(modifier = Modifier.height(20.dp))
 
             var result by remember { mutableStateOf("") }
+//            Button(onClick = {
+//                try {
+//                    val start = LocalDate.parse(startDate, formatter)
+//                    val end = LocalDate.parse(endDate, formatter)
+////                    result = Period.between(start, end).toString()
+//                    val period = ChronoUnit.DAYS.between(start, end)
+//                    result = "Days between: $period"
+//                } catch (e: Exception) {
+//                    result = "Invalid date format"
+//                }
+//            }) {
+//                Text("Calculate")
+//            }
+//            Text(text = result)
             Button(onClick = {
                 try {
                     val start = LocalDate.parse(startDate, formatter)
                     val end = LocalDate.parse(endDate, formatter)
-//                    result = Period.between(start, end).toString()
-                    val period = ChronoUnit.DAYS.between(start, end)
-                    result = "Days between: $period"
+                    val difference = ChronoUnit.DAYS.between(start, end)
+                    period = "$difference days"
+                    val contractsRepository = ContractsRepository(navController,context )
+                    contractsRepository.saveContracts(companyName,email,services,startDate,endDate,period)
                 } catch (e: Exception) {
-                    result = "Invalid date format"
+                    Toast.makeText(context, "Wrong date format or fill in all the details.", Toast.LENGTH_SHORT).show()
                 }
-            }) {
-                Text("Calculate")
-            }
-            Text(text = result)
-            Button(onClick = {
-                val contractsRepository = ContractsRepository(navController,context )
-                contractsRepository.saveContracts(companyName,email,services,startDate,endDate)
             },
                 colors = ButtonDefaults.buttonColors(Orange)) {
                 Text(text = "Add")

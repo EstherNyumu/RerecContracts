@@ -24,9 +24,9 @@ class LicenceRepository(var navController: NavHostController,var context: Contex
         progress.setMessage("Please wait...")
     }
     /*----Saving Data Logic---*/
-    fun saveLicence(softwareName:String,vendorName:String,licenceType:String,cost:String,startDate:String,endDate:String){
+    fun saveLicence(softwareName:String,vendorName:String,licenceType:String,cost:String,startDate:String,endDate:String,period:String){
         var id = System.currentTimeMillis().toString()
-        var licenceData= Licences(softwareName,vendorName,licenceType,cost,startDate,endDate,id)
+        var licenceData= Licences(softwareName,vendorName,licenceType,cost,startDate,endDate,period,id)
         var licenceRef = FirebaseDatabase.getInstance().getReference().child("Licences/$id")
         progress.show()
 

@@ -62,7 +62,6 @@ fun ViewContractsAdmin(navController:NavHostController) {
     val emptyContractState = remember { mutableStateOf(Contracts()) }
     val emptyContractsListState = remember { mutableStateListOf<Contracts>() }
     val contracts = contractsRepository.viewContracts(emptyContractState, emptyContractsListState)
-    var currentDate = System.currentTimeMillis().toString()
 
 
     Column(
@@ -88,8 +87,9 @@ fun ViewContractsAdmin(navController:NavHostController) {
                     services = it.services,
                     startDate = it.startDate,
                     endDate = it.endDate,
+                    period = it.period,
                     contractId = it.contractId,
-                    contractsRepository =contractsRepository
+                    contractsRepository = contractsRepository
                 )
             }
 
@@ -100,7 +100,7 @@ fun ViewContractsAdmin(navController:NavHostController) {
     Column {
         Spacer(modifier = Modifier.weight(1f))
         Row {
-            Spacer(modifier = Modifier.weight(1f))
+//            Spacer(modifier = Modifier.weight(1f))
             FloatingActionButton(
                 onClick = {
                     val authRepository = AuthRepository(navController, context)
@@ -131,6 +131,7 @@ fun ContractItem(
     services: String,
     startDate: String,
     endDate: String,
+    period:String,
     contractId: String,
     contractsRepository: ContractsRepository
 ) {
@@ -159,6 +160,10 @@ fun ContractItem(
             Row {
                 Text(text = "End Date:",color = Green,modifier = Modifier.padding(5.dp),fontWeight = FontWeight.SemiBold)
                 Text(text = endDate, modifier = Modifier.padding(5.dp))
+            }
+            Row {
+                Text(text = "Days remaining:",color = Green,modifier = Modifier.padding(5.dp),fontWeight = FontWeight.SemiBold)
+                Text(text = period, modifier = Modifier.padding(5.dp))
             }
             Row {
                 Spacer(modifier = Modifier.weight(1f))
