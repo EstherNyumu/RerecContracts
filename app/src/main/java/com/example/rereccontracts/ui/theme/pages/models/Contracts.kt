@@ -1,4 +1,4 @@
-package com.example.rereccontracts.ui.theme.pages.admin.models
+package com.example.rereccontracts.ui.theme.pages.models
 
 class Contracts {
     var companyName : String = ""

@@ -1,4 +1,4 @@
-package com.example.rereccontracts.ui.theme.pages.admin.data
+package com.example.rereccontracts.ui.theme.pages.data
 
 import android.app.ProgressDialog
 import android.content.Context
@@ -6,10 +6,10 @@ import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation.NavHostController
-import com.example.rereccontracts.ui.theme.pages.admin.models.BottomBarScreen
-import com.example.rereccontracts.ui.theme.pages.admin.models.Contracts
-import com.example.rereccontracts.ui.theme.pages.admin.models.Licences
-import com.example.rereccontracts.ui.theme.pages.admin.navigation.ROUTE_ADD_CONTRACT
+import com.example.rereccontracts.ui.theme.pages.models.BottomBarScreen
+import com.example.rereccontracts.ui.theme.pages.models.Contracts
+import com.example.rereccontracts.ui.theme.pages.models.Licences
+import com.example.rereccontracts.ui.theme.pages.navigation.ROUTE_ADD_CONTRACT
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase

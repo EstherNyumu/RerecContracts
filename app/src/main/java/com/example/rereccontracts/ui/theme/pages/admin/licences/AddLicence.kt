@@ -32,7 +32,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.rereccontracts.ui.theme.Green
 import com.example.rereccontracts.ui.theme.Orange
 import com.example.rereccontracts.ui.theme.RerecContractsTheme
-import com.example.rereccontracts.ui.theme.pages.admin.data.LicenceRepository
+import com.example.rereccontracts.ui.theme.pages.data.LicenceRepository
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit

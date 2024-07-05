@@ -1,5 +1,6 @@
 package com.example.rereccontracts.ui.theme.pages.admin.contracts
 
+
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -25,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,6 +36,11 @@ import com.example.rereccontracts.ui.theme.Green
 import com.example.rereccontracts.ui.theme.Orange
 import com.example.rereccontracts.ui.theme.RerecContractsTheme
 import com.example.rereccontracts.ui.theme.pages.data.ContractsRepository
+import com.example.rereccontracts.ui.theme.pages.models.Contracts
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
@@ -42,24 +49,45 @@ import java.time.temporal.ChronoUnit
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddContracts(navController: NavHostController) {
+fun EditContracts(navController: NavHostController,id:String) {
     Surface {
         Column(modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center) {
 
-            var companyName by remember { mutableStateOf("") }
-            var email by remember { mutableStateOf("") }
-            var services by remember { mutableStateOf("") }
-            var startDate by remember { mutableStateOf("") }
-            var endDate by remember { mutableStateOf("") }
-            var period by remember { mutableStateOf("") }
+            var companyName1 by remember { mutableStateOf("")}
+            var email1 by remember { mutableStateOf("") }
+            var services1 by remember { mutableStateOf("") }
+            var startDate1 by remember { mutableStateOf("") }
+            var endDate1 by remember { mutableStateOf("") }
+            var period1 by remember { mutableStateOf("") }
             var context = LocalContext.current
             val formatter =  DateTimeFormatter.ofPattern("dd-MM-yyyy")
 
+            var currentDataRef = FirebaseDatabase.getInstance().getReference()
+                .child("Contracts/$id")
+            currentDataRef.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    var contract = snapshot.getValue(Contracts::class.java)
+                    companyName1 = contract!!.companyName
+                    email1 = contract!!.email
+                    services1 = contract!!.services
+                    startDate1 = contract!!.startDate
+                    endDate1 = contract!!.endDate
+                    period1 = contract!!.period
+                }
 
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+                }
+            })
+            var companyName by remember { mutableStateOf(TextFieldValue(companyName1))}
+            var email by remember { mutableStateOf(TextFieldValue(email1)) }
+            var services by remember { mutableStateOf(TextFieldValue(services1)) }
+            var startDate by remember { mutableStateOf(TextFieldValue(startDate1)) }
+            var endDate by remember { mutableStateOf(TextFieldValue(endDate1)) }
             Spacer(modifier = Modifier.height(20.dp))
-            Text(text = "Add Contract",
+            Text(text = "Edit Contract",
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -128,18 +156,18 @@ fun AddContracts(navController: NavHostController) {
 //            Text(text = result)
             Button(onClick = {
                 try {
-                    val start = LocalDate.parse(startDate, formatter)
-                    val end = LocalDate.parse(endDate, formatter)
+                    val start = LocalDate.parse(startDate1, formatter)
+                    val end = LocalDate.parse(endDate1, formatter)
                     val difference = ChronoUnit.DAYS.between(start, end)
-                    period = "$difference days"
+                    period1 = "$difference days"
                     val contractsRepository = ContractsRepository(navController,context )
-                    contractsRepository.saveContracts(companyName,email,services,startDate,endDate,period)
+                    contractsRepository.updateContracts(companyName1,email1,services1,startDate1,endDate1,period1)
                 } catch (e: Exception) {
                     Toast.makeText(context, "Wrong date format or fill in all the details.", Toast.LENGTH_SHORT).show()
                 }
             },
                 colors = ButtonDefaults.buttonColors(Orange)) {
-                Text(text = "Add")
+                Text(text = "Update")
             }
         }
     }
@@ -148,8 +176,8 @@ fun AddContracts(navController: NavHostController) {
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
-private fun AddContractsPreview() {
+private fun EditContractsPreview() {
     RerecContractsTheme {
-        AddContracts(rememberNavController())
+        EditContracts(rememberNavController(), id = "" )
     }
 }

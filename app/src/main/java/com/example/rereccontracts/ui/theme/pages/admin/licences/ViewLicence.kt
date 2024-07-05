@@ -42,11 +42,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.rereccontracts.ui.theme.Green
 import com.example.rereccontracts.ui.theme.Orange
-import com.example.rereccontracts.ui.theme.pages.admin.data.AuthRepository
-import com.example.rereccontracts.ui.theme.pages.admin.data.LicenceRepository
-import com.example.rereccontracts.ui.theme.pages.admin.models.Licences
-import com.example.rereccontracts.ui.theme.pages.admin.navigation.ROUTE_ADD_LICENSE
-import com.example.rereccontracts.ui.theme.pages.admin.navigation.ROUTE_SIGNIN
+import com.example.rereccontracts.ui.theme.pages.data.AuthRepository
+import com.example.rereccontracts.ui.theme.pages.data.LicenceRepository
+import com.example.rereccontracts.ui.theme.pages.models.Licences
+import com.example.rereccontracts.ui.theme.pages.navigation.ROUTE_ADD_LICENSE
+import com.example.rereccontracts.ui.theme.pages.navigation.ROUTE_SIGNIN
 
 
 @Composable

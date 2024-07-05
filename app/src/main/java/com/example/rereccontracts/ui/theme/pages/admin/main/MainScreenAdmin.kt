@@ -1,5 +1,7 @@
 package com.example.rereccontracts.ui.theme.pages.admin.main
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -54,13 +56,14 @@ import androidx.navigation.compose.rememberNavController
 import com.example.rereccontracts.R
 import com.example.rereccontracts.R.drawable.rerec_logo
 import com.example.rereccontracts.ui.theme.Orange
-import com.example.rereccontracts.ui.theme.pages.admin.data.AuthRepository
-import com.example.rereccontracts.ui.theme.pages.admin.models.BottomBarScreen
-import com.example.rereccontracts.ui.theme.pages.admin.navigation.AppNavHost
-import com.example.rereccontracts.ui.theme.pages.admin.navigation.ROUTE_SIGNIN
+import com.example.rereccontracts.ui.theme.pages.data.AuthRepository
+import com.example.rereccontracts.ui.theme.pages.models.BottomBarScreen
+import com.example.rereccontracts.ui.theme.pages.navigation.AppNavHost
+import com.example.rereccontracts.ui.theme.pages.navigation.ROUTE_SIGNIN
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainScreen() {
+fun MainScreenAdmin() {
     val navController = rememberNavController()
     val bottomBarHeight = 56.dp
     val bottomBarOffsetHeightPx = remember { mutableStateOf(0f) }
@@ -75,8 +78,9 @@ fun MainScreen() {
         modifier = Modifier.bottomBarAnimatedScroll(
             height = bottomBarHeight, offsetHeightPx = bottomBarOffsetHeightPx
         ),
-        bottomBar = { if (authRepository.isLoggedIn()){ BottomBar(navController = navController, state = buttonsVisible,modifier = Modifier)}else{null}},
-        topBar = { TopAppBar(modifier = Modifier,navController = navController)}
+        bottomBar = { if (authRepository.isLoggedIn()){ BottomBar(navController = navController, state = buttonsVisible,modifier = Modifier)
+        }else{null}},
+        topBar = { TopAppBar(modifier = Modifier,navController = navController) }
     ){paddingValues->
         Box(modifier = Modifier.padding(paddingValues)){
             AppNavHost(navController = navController)

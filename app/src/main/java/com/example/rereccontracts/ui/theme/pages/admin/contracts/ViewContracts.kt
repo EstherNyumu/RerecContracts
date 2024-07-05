@@ -45,11 +45,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.rereccontracts.ui.theme.Green
 import com.example.rereccontracts.ui.theme.Orange
-import com.example.rereccontracts.ui.theme.pages.admin.data.AuthRepository
-import com.example.rereccontracts.ui.theme.pages.admin.data.ContractsRepository
-import com.example.rereccontracts.ui.theme.pages.admin.models.Contracts
-import com.example.rereccontracts.ui.theme.pages.admin.navigation.ROUTE_ADD_CONTRACT
-import com.example.rereccontracts.ui.theme.pages.admin.navigation.ROUTE_SIGNIN
+import com.example.rereccontracts.ui.theme.pages.data.AuthRepository
+import com.example.rereccontracts.ui.theme.pages.data.ContractsRepository
+import com.example.rereccontracts.ui.theme.pages.models.Contracts
+import com.example.rereccontracts.ui.theme.pages.navigation.ROUTE_ADD_CONTRACT
+import com.example.rereccontracts.ui.theme.pages.navigation.ROUTE_EDIT_CONTRACTS
+import com.example.rereccontracts.ui.theme.pages.navigation.ROUTE_SIGNIN
 import org.jetbrains.annotations.Contract
 import java.time.LocalDate
 
@@ -84,12 +85,14 @@ fun ViewContractsAdmin(navController:NavHostController) {
             items(contracts) {
                 ContractItem(
                     companyName = it.companyName,
+                    email = it.email,
                     services = it.services,
                     startDate = it.startDate,
                     endDate = it.endDate,
                     period = it.period,
                     contractId = it.contractId,
-                    contractsRepository = contractsRepository
+                    contractsRepository = contractsRepository,
+                    navController = navController
                 )
             }
 
@@ -128,12 +131,14 @@ fun ViewContractsAdmin(navController:NavHostController) {
 @Composable
 fun ContractItem(
     companyName: String,
+    email: String,
     services: String,
     startDate: String,
     endDate: String,
     period:String,
     contractId: String,
-    contractsRepository: ContractsRepository
+    contractsRepository: ContractsRepository,
+    navController:NavHostController
 ) {
     var showDialog by remember { mutableStateOf(false) }
     Column(modifier = Modifier.fillMaxWidth(),
@@ -148,6 +153,10 @@ fun ContractItem(
             Row {
                 Text(text = "Company Name:", color = Green,modifier = Modifier.padding(5.dp),fontWeight = FontWeight.SemiBold)
                 Text(text = companyName, modifier = Modifier.padding(5.dp))
+            }
+            Row {
+                Text(text = "Email:", color = Green,modifier = Modifier.padding(5.dp),fontWeight = FontWeight.SemiBold)
+                Text(text = email, modifier = Modifier.padding(5.dp))
             }
             Row {
                 Text(text = "Services:",color = Green,modifier = Modifier.padding(5.dp),fontWeight = FontWeight.SemiBold)
@@ -170,7 +179,7 @@ fun ContractItem(
 
                 IconButton(
                     onClick = {
-
+                        navController.navigate("$ROUTE_EDIT_CONTRACTS/$contractId")
                     }, colors = IconButtonDefaults.iconButtonColors(
                         containerColor = Color.Transparent,
                         contentColor = Orange

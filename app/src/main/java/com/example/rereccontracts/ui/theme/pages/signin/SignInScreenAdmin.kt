@@ -1,6 +1,5 @@
-package com.example.rereccontracts.ui.theme.pages.admin.signup
+package com.example.rereccontracts.ui.theme.pages.signin
 
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,7 +30,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,45 +40,44 @@ import androidx.navigation.compose.rememberNavController
 import com.example.rereccontracts.ui.theme.Green
 import com.example.rereccontracts.ui.theme.Orange
 import com.example.rereccontracts.ui.theme.RerecContractsTheme
-import com.example.rereccontracts.ui.theme.pages.admin.data.AuthRepository
-import com.example.rereccontracts.ui.theme.pages.admin.models.BottomBarScreen
-import com.example.rereccontracts.ui.theme.pages.admin.navigation.ROUTE_SIGNIN
-import com.example.rereccontracts.ui.theme.pages.admin.navigation.ROUTE_SIGNUP
+import com.example.rereccontracts.ui.theme.pages.data.AuthRepository
+import com.example.rereccontracts.ui.theme.pages.models.BottomBarScreen
+import com.example.rereccontracts.ui.theme.pages.navigation.ROUTE_SIGNUP
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpAdmin(navController: NavHostController) {
+fun SignInAdmin(navController: NavHostController) {
+    var context = LocalContext.current
     Surface {
-        Column (modifier =Modifier.fillMaxSize(),
+        Column(modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center){
-            val context = LocalContext.current
+            verticalArrangement = Arrangement.Center) {
             var email by remember { mutableStateOf("") }
-            var password by remember { mutableStateOf("")}
-            var confirmPassword by remember { mutableStateOf("") }
+            var password by remember { mutableStateOf("") }
             var isFormValid by remember { mutableStateOf(false) }
             var showPassword by remember { mutableStateOf(false) }
 
             Spacer(modifier = Modifier.height(20.dp))
-            Text(text = "Sign Up",
+            Text(text = "Welcome Back!",
                 fontSize = 30.sp)
             Spacer(modifier = Modifier.height(20.dp))
-
-
+            Text(text = "Sign In",
+                fontSize = 20.sp)
+            Spacer(modifier = Modifier.height(20.dp))
             OutlinedTextField(value = email,
                 onValueChange = {email = it},
-                label = { Text(text = "Email", color = Orange, fontStyle = FontStyle.Italic) },
+                label = { Text(text = "Email", color = Orange, fontStyle = FontStyle.Italic)},
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Green,
                     unfocusedBorderColor = Green
-                )
-            )
-            Spacer(modifier = Modifier.height(20.dp))
+                ))
 
+            Spacer(modifier = Modifier.height(20.dp))
             OutlinedTextField(value = password,
                 onValueChange = {password = it},
-                label = { Text(text = "Password",color = Orange, fontStyle = FontStyle.Italic) },
+                label = { Text(text = "Password", color = Orange, fontStyle = FontStyle.Italic) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 visualTransformation = if(showPassword){
                     VisualTransformation.None
@@ -104,74 +101,39 @@ fun SignUpAdmin(navController: NavHostController) {
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Green,
                     unfocusedBorderColor = Green
-                )
-            )
+                ))
             Spacer(modifier = Modifier.height(20.dp))
 
-            OutlinedTextField(value = confirmPassword,
-                onValueChange = {confirmPassword = it},
-                label = { Text(text = "Confirm Password",color = Orange, fontStyle = FontStyle.Italic) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                visualTransformation = if(showPassword){
-                    VisualTransformation.None
-                }else{
-                    PasswordVisualTransformation()
-                },
-                trailingIcon = {
-                    if (showPassword){
-                        IconButton(onClick = { showPassword = false}) {
-                            Icon(
-                                imageVector = Icons.Filled.Visibility ,
-                                contentDescription = "hide_password")
-                        }
-                    } else{
-                        IconButton(onClick = { showPassword = true }) {
-                            Icon(imageVector = Icons.Filled.VisibilityOff,
-                                contentDescription = "show_password" )
-                        }
-                    }
-                },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Green,
-                    unfocusedBorderColor = Green
-                )
-            )
-            Spacer(modifier = Modifier.height(20.dp))
+            isFormValid = email.isNotBlank() && password.isNotBlank()
 
-            isFormValid = email.isNotBlank() && password.isNotBlank() && confirmPassword.isNotBlank()
             Button(onClick = {
-                if (password != confirmPassword) {
-                    Toast.makeText(
-                        context,
-                        "Passwords do not match",
-                        Toast.LENGTH_LONG
-                    ).show()
-//                    navController.navigate(ROUTE_SIGNUP)
-                }else{
-                    var authRepository = AuthRepository(navController,context)
-                    authRepository.signUp(email,password)
-                    navController.navigate(BottomBarScreen.Contracts.route)
-                }
+                var authRepository = AuthRepository(navController,context)
+                authRepository.signIn(email,password)
+                navController.navigate(BottomBarScreen.Contracts.route)
             },
-                enabled = isFormValid,
-                colors = ButtonDefaults.buttonColors(Orange)) {
-                Text(text = "Sign Up")
+                colors = ButtonDefaults.buttonColors(Orange),
+                enabled = isFormValid){
+                Text(text = "Sign in")
             }
             Spacer(modifier = Modifier.height(20.dp))
-
-            Text(text = "Already registered?", color = Green,
+            Text(text = "Forgot password?", color = Green,
                 textDecoration = TextDecoration.Underline,
                 modifier = Modifier.clickable {
-                    navController.navigate(ROUTE_SIGNIN)
-                })//take us to sign in
+                })
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(text = "Not registered?", color = Green,
+                textDecoration = TextDecoration.Underline,
+                modifier = Modifier.clickable {
+                    navController.navigate(ROUTE_SIGNUP)
+                })//take us to sign up
         }
     }
-}
 
+}
 @Preview
 @Composable
-private fun SignUpAdminPreview() {
+private fun SignInAdminPreview() {
     RerecContractsTheme {
-        SignUpAdmin(rememberNavController())
+        SignInAdmin(rememberNavController())
     }
 }

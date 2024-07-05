@@ -1,4 +1,4 @@
-package com.example.rereccontracts.ui.theme.pages.admin.data
+package com.example.rereccontracts.ui.theme.pages.data
 
 
 
@@ -8,9 +8,9 @@ import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation.NavHostController
-import com.example.rereccontracts.ui.theme.pages.admin.models.BottomBarScreen
-import com.example.rereccontracts.ui.theme.pages.admin.models.Contracts
-import com.example.rereccontracts.ui.theme.pages.admin.navigation.ROUTE_ADD_CONTRACT
+import com.example.rereccontracts.ui.theme.pages.models.BottomBarScreen
+import com.example.rereccontracts.ui.theme.pages.models.Contracts
+import com.example.rereccontracts.ui.theme.pages.navigation.ROUTE_ADD_CONTRACT
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -64,6 +64,23 @@ class ContractsRepository(var navController: NavHostController,var context: Cont
             }
         })
         return contracts
+    }
+    /*----Updating Data Logic---*/
+    fun updateContracts(companyName:String,email:String,services:String,startDate:String,endDate:String,period:String){
+        var id = System.currentTimeMillis().toString()
+        var updateRef = FirebaseDatabase.getInstance().getReference()
+            .child("Contracts/$id")
+        progress.show()
+        var updateData = Contracts(companyName,email,services,startDate,endDate,period,id)
+        updateRef.setValue(updateData).addOnCompleteListener {
+            progress.dismiss()
+            if (it.isSuccessful){
+                Toast.makeText(context, "Edited successful", Toast.LENGTH_SHORT).show()
+                navController.navigate(BottomBarScreen.Contracts.route)
+            }else{
+                Toast.makeText(context, it.exception!!.message, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
     /*----Deleting Data Logic---*/
     fun terminateContract(id:String){

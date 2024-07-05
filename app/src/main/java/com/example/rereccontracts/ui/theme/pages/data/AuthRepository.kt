@@ -1,13 +1,14 @@
-package com.example.rereccontracts.ui.theme.pages.admin.data
+package com.example.rereccontracts.ui.theme.pages.data
 
 import android.app.ProgressDialog
 import android.content.Context
 import android.widget.Toast
 import androidx.navigation.NavHostController
-import com.example.rereccontracts.ui.theme.pages.admin.models.BottomBarScreen
-import com.example.rereccontracts.ui.theme.pages.admin.models.Users
-import com.example.rereccontracts.ui.theme.pages.admin.navigation.ROUTE_SIGNIN
-import com.example.rereccontracts.ui.theme.pages.admin.navigation.ROUTE_SIGNUP
+import com.example.rereccontracts.ui.theme.pages.models.BottomBarScreen
+import com.example.rereccontracts.ui.theme.pages.models.Users
+import com.example.rereccontracts.ui.theme.pages.navigation.ROUTE_SIGNIN
+import com.example.rereccontracts.ui.theme.pages.navigation.ROUTE_SIGNUP
+import com.example.rereccontracts.ui.theme.pages.models.Roles
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
@@ -23,25 +24,26 @@ class AuthRepository(var navController: NavHostController, var context: Context)
     }
 
     /*----Sign Up Logic---*/
-    fun signUp( email: String, password: String) {
+    fun signUp( role: String, email: String, password: String) {
         try {
             progress.show()
             progress.dismiss()
             mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
                 if (it.isSuccessful) {
-                    var userData = Users(email, password, mAuth.currentUser!!.uid)
-                    var regRef = FirebaseDatabase.getInstance().getReference()
-                        .child("Users" + mAuth.currentUser!!.uid)
-                    regRef.setValue(userData).addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            Toast.makeText(
-                                context,
-                                "Thank you $email for joining us!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            navController.navigate(BottomBarScreen.Contracts.route)
+                    val role = Roles(role, mAuth.currentUser!!.uid)
+                    FirebaseDatabase.getInstance().getReference()
+                        .child("Roles").child(mAuth.currentUser!!.uid).setValue(role)
+                        .addOnCompleteListener{
+                            if (it.isSuccessful) {
+                                Toast.makeText(
+                                    context,
+                                    "Thank you $email for joining us!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                navController.navigate(BottomBarScreen.Contracts.route)
+//                        }
+                            }
                         }
-                    }
                 } else {
                     Toast.makeText(
                         context,

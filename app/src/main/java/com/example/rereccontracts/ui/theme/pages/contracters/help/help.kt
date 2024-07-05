@@ -13,10 +13,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.rereccontracts.ui.theme.RerecContractsTheme
 
 @Composable
-fun helpContracter(modifier: Modifier = Modifier) {
+fun HelpContracter(navController: NavHostController) {
 Surface {
     Column (modifier=Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally){
@@ -51,8 +53,8 @@ Surface {
 
 @Preview
 @Composable
-private fun helpContracterPreview() {
+private fun HelpContracterPreview() {
 RerecContractsTheme {
-    helpContracter()
+    HelpContracter(rememberNavController())
 }
 }
