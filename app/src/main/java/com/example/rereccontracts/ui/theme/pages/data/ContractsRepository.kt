@@ -11,6 +11,7 @@ import androidx.navigation.NavHostController
 import com.example.rereccontracts.ui.theme.pages.models.BottomBarScreen
 import com.example.rereccontracts.ui.theme.pages.models.Contracts
 import com.example.rereccontracts.ui.theme.pages.navigation.ROUTE_ADD_CONTRACT
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.Contract
 
 class ContractsRepository(var navController: NavHostController,var context: Context){
     var progress: ProgressDialog
+    var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
     init {
         progress= ProgressDialog(context)
         progress.setTitle("Loading")
@@ -39,7 +41,7 @@ class ContractsRepository(var navController: NavHostController,var context: Cont
             }
             else {
                 Toast.makeText(context, "ERROR: Try Again! ", Toast.LENGTH_SHORT).show()
-             //   navController.navigate(ROUTE_ADD_CONTRACT)
+                //   navController.navigate(ROUTE_ADD_CONTRACT)
             }
         }
     }
@@ -65,6 +67,31 @@ class ContractsRepository(var navController: NavHostController,var context: Cont
         })
         return contracts
     }
+    fun viewContractsContracter(contract: MutableState<Contracts>, contracts: SnapshotStateList<Contracts>): SnapshotStateList<Contracts> {
+        val currentUser = mAuth.currentUser
+        val userEmail = currentUser?.email ?: return contracts
+        val ref = FirebaseDatabase.getInstance().getReference().child("Contracts")
+        val query = ref.orderByChild("email").equalTo(userEmail)
+
+        progress.show()
+        query.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                progress.dismiss()
+                contracts.clear()
+                for (snap in snapshot.children){
+                    val value = snap.getValue(Contracts::class.java)
+                    contract.value = value!!
+                    contracts.add(value)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+            }
+        })
+        return contracts
+    }
+
     /*----Updating Data Logic---*/
     fun updateContracts(companyName:String,email:String,services:String,startDate:String,endDate:String,period:String){
         var id = System.currentTimeMillis().toString()

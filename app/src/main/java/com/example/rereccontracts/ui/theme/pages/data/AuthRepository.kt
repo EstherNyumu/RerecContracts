@@ -9,15 +9,15 @@ import com.example.rereccontracts.ui.theme.pages.models.Users
 import com.example.rereccontracts.ui.theme.pages.navigation.ROUTE_SIGNIN
 import com.example.rereccontracts.ui.theme.pages.navigation.ROUTE_SIGNUP
 import com.example.rereccontracts.ui.theme.pages.models.Roles
+import com.example.rereccontracts.ui.theme.pages.navigation.ROUTE_HOME
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
 class AuthRepository(var navController: NavHostController, var context: Context) {
-    var mAuth: FirebaseAuth
+    var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
     val progress: ProgressDialog
 
     init {
-        mAuth = FirebaseAuth.getInstance()
         progress = ProgressDialog(context)
         progress.setTitle("Loading...")
         progress.setMessage("Please wait...")
@@ -27,21 +27,40 @@ class AuthRepository(var navController: NavHostController, var context: Context)
     fun signUp( role: String, email: String, password: String) {
         try {
             progress.show()
-            progress.dismiss()
-            mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    val role = Roles(role, mAuth.currentUser!!.uid)
+            mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task->
+                progress.dismiss()
+                if (task.isSuccessful) {
+                    val currentUser = mAuth.currentUser?:return@addOnCompleteListener
+                    val roleData = Roles(role, currentUser.uid)
+
                     FirebaseDatabase.getInstance().getReference()
-                        .child("Roles").child(mAuth.currentUser!!.uid).setValue(role)
-                        .addOnCompleteListener{
-                            if (it.isSuccessful) {
+                        .child("Roles").child(currentUser.uid).setValue(roleData)
+                        .addOnCompleteListener{ roleTask->
+                            if (roleTask.isSuccessful) {
                                 Toast.makeText(
                                     context,
                                     "Thank you $email for joining us!",
                                     Toast.LENGTH_SHORT
                                 ).show()
-                                navController.navigate(BottomBarScreen.Contracts.route)
-//                        }
+//                                navController.navigate(BottomBarScreen.Contracts.route)
+
+                                when(role){
+                                    "Admin" ->{
+                                        navController.navigate(BottomBarScreen.Contracts.route)
+
+                                    }
+                                    "Contracter" ->{
+                                        navController.navigate(ROUTE_HOME)
+                                    }
+                                    else ->{
+                                        navController.navigate(ROUTE_SIGNUP)
+                                        Toast.makeText(
+                                            context,
+                                            "Contact Admin for assistance",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
                             }
                         }
                 } else {
@@ -65,10 +84,46 @@ class AuthRepository(var navController: NavHostController, var context: Context)
     /*----Log in logic---*/
     fun signIn(email: String, password: String) {
         try {
-            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
-                    navController.navigate(BottomBarScreen.Contracts.route)
+            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val currentUser = mAuth.currentUser ?: return@addOnCompleteListener
+                    FirebaseDatabase.getInstance().getReference()
+                        .child("Roles").child(currentUser.uid).get()
+                        .addOnCompleteListener { roleTask ->
+                            if (roleTask.isSuccessful) {
+                                val role = roleTask.result.getValue(Roles::class.java)?.role
+                                Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT)
+                                    .show()
+//                                navController.navigate(BottomBarScreen.Contracts.route)
+
+                                when (role) {
+                                    "Admin" -> {
+                                        navController.navigate(BottomBarScreen.Contracts.route)
+                                    }
+
+                                    "Contracter" -> {
+                                        navController.navigate(ROUTE_HOME)
+                                    }
+
+                                    else -> {
+                                        navController.navigate(ROUTE_SIGNIN)
+                                        Toast.makeText(
+                                            context,
+                                            "Contact Admin for assistance",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+
+                                }
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "The account doesn't exist or the details entered are wrong.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                navController.navigate(ROUTE_SIGNIN)
+                            }
+                        }
                 } else {
                     Toast.makeText(
                         context,
@@ -97,4 +152,36 @@ class AuthRepository(var navController: NavHostController, var context: Context)
     /*----Log in Restriction Logic---*/
     fun isLoggedIn(): Boolean = mAuth.currentUser != null
 
+    fun resetPassword(email: String) {
+        mAuth.sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(
+                        context,
+                        "Password reset email.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    // Show success message or navigate to password reset page
+                    // Example: message = "Password reset email sent."
+                    // Example: navigateToResetPasswordPage()
+                } else {
+                    // Show error message
+                    task.exception?.message?.let { message ->
+                        Toast.makeText(
+                            context,
+                            "Error: $message",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        // Example: message = "Error: $message"
+                    } ?: run {
+                        Toast.makeText(
+                            context,
+                            "Failed to send password reset email.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        // Example: message = "Failed to send password reset email."
+                    }
+                }
+            }
+    }
 }

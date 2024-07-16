@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -42,6 +44,7 @@ import com.example.rereccontracts.ui.theme.Orange
 import com.example.rereccontracts.ui.theme.RerecContractsTheme
 import com.example.rereccontracts.ui.theme.pages.data.AuthRepository
 import com.example.rereccontracts.ui.theme.pages.models.BottomBarScreen
+import com.example.rereccontracts.ui.theme.pages.navigation.ROUTE_FORGOT_PASSWORD
 import com.example.rereccontracts.ui.theme.pages.navigation.ROUTE_SIGNUP
 
 
@@ -50,7 +53,8 @@ import com.example.rereccontracts.ui.theme.pages.navigation.ROUTE_SIGNUP
 fun SignInAdmin(navController: NavHostController) {
     var context = LocalContext.current
     Surface {
-        Column(modifier = Modifier.fillMaxSize(),
+        Column(modifier = Modifier.fillMaxSize()
+            .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center) {
             var email by remember { mutableStateOf("") }
@@ -109,7 +113,7 @@ fun SignInAdmin(navController: NavHostController) {
             Button(onClick = {
                 var authRepository = AuthRepository(navController,context)
                 authRepository.signIn(email,password)
-                navController.navigate(BottomBarScreen.Contracts.route)
+//                navController.navigate(BottomBarScreen.Contracts.route)
             },
                 colors = ButtonDefaults.buttonColors(Orange),
                 enabled = isFormValid){
@@ -119,6 +123,7 @@ fun SignInAdmin(navController: NavHostController) {
             Text(text = "Forgot password?", color = Green,
                 textDecoration = TextDecoration.Underline,
                 modifier = Modifier.clickable {
+                    navController.navigate(ROUTE_FORGOT_PASSWORD)
                 })
             Spacer(modifier = Modifier.height(20.dp))
             Text(text = "Not registered?", color = Green,

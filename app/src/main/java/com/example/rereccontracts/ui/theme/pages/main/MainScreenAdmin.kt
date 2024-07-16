@@ -1,4 +1,4 @@
-package com.example.rereccontracts.ui.theme.pages.admin.main
+package com.example.rereccontracts.ui.theme.pages.main
 
 import android.os.Build
 import androidx.annotation.RequiresApi
